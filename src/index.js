@@ -17,4 +17,9 @@ let vm = new Vue({
     }
 })
 
-console.log(vm.arr.push({aaa: '111'}), vm.arr[3].aaa)
+setTimeout(() => {
+ 
+    vm.msg = 'hahahah'
+    vm.arr.push('5555')
+}, 1500)
+// console.log(vm.arr.push({aaa: '111'}), vm.arr[3].aaa)

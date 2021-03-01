@@ -44,6 +44,9 @@ methods.forEach(method => {
     if (insertedVal) {
       observeArray(insertedVal)
     }
+    
+    // 数组更新，通知watcher
+    this.__ob__.dep.notify()
 
     return ret 
   }

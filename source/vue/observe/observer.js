@@ -1,8 +1,16 @@
 import { observe } from './index'
 import { arrayMethods, observeArray } from './array'
+import Dep from './dep'
 
 class Observer {
   constructor(data) {
+
+    this.dep = new Dep() // 给数组用的
+
+    Object.defineProperty(data, '__ob__', {
+      get: () => this 
+    })
+
     if (Array.isArray(data)) {
       // 只能拦截数组的方法
       data.__proto__ = arrayMethods
@@ -31,18 +39,30 @@ class Observer {
 
 export function defineReactive(data, key, value) {
   // 如果value是一个对象，递归调用
-  observe(value)
-
+  let childOb = observe(value)  // childOb是一个Observe实例 上面有给数组用的dep属性 
+  let dep = new Dep()
   Object.defineProperty(data, key, {
     get() {
+      // debugger 
+      if (Dep.target) {
+        dep.depend()
+
+        if (childOb) {
+          childOb.dep.depend()
+        }
+      }
       console.log(`获取对象属性${key}的值`)
       return value 
     },
     set(val) {
-      if (val !== value) return 
+
+      if (val === value) return 
+
       value = val 
       observe(val) // 对新设置的值进行监控
       console.log(`设置对象属性${key}的值`)
+
+      dep.notify()
     }
   })
 }

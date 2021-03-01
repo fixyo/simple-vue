@@ -26,7 +26,7 @@ function query(el) {
 // .|\r 匹配任意字符，或则换行符
 // + 至少一个
 // ？尽可能少匹配
-const defaultRE = /\{\{((?:.|\r?\n)+?)\}\}/
+const defaultRE = /\{\{((?:.|\r?\n)+?)\}\}/g
 const util = {
   getValue(vm, expr) {
     let keys = expr.split('.')
@@ -35,7 +35,10 @@ const util = {
     }, vm)
   },
   compilerText(node, vm) {
-    node.textContent = node.textContent.replace(defaultRE, function(...args) {
+    if (!node.exp) {
+      node.exp = node.textContent
+    }
+    node.textContent = node.exp.replace(defaultRE, function(...args) {
       console.log(vm, args[1])
       return util.getValue(vm, args[1])
     })
